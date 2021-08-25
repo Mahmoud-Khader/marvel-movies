@@ -8,6 +8,9 @@ const logger = require('./auth/middleware/logger.js');
 
 const authRoutes = require('./auth/routes/routes.js');
 
+const errorHandler = require('./error-handlers/500.js');
+const notFound = require('./error-handlers/404.js');
+
 
 
 const app = express();
@@ -26,6 +29,13 @@ app.use(authRoutes);
 app.get('/', (req,res)=>{
   res.status(200).send('Working...');
 });
+
+app.get('/bad',(req, res, next)=> {
+  next ('Error Bad End Point');
+});
+
+app.use('*',notFound);
+app.use(errorHandler);
 
 
 module.exports = {
