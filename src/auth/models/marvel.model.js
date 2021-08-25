@@ -6,7 +6,7 @@ const marvelModel = (sequelize, DataTypes) => {
     favHero: { type: DataTypes.STRING },
     favQuote: { type: DataTypes.STRING },
     releaseDate:{type: DataTypes.INTEGER},
-   
+    userId:{type: DataTypes.INTEGER },
   });
   return model;
 };
