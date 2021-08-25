@@ -1,22 +1,25 @@
-'use strict';
+"use strict";
 
-const { Sequelize, DataTypes } = require('sequelize');
-const userModel = require('./users.js');
+const { Sequelize, DataTypes } = require("sequelize");
+
+const user = require("./users.js");
+const marvel = require("./marvel.model");
+const DataCollection = require("./data-collection");
+
+const DATABASE_URL =  process.env.DATABASE_URL;
 
 
-const DATABASE_URL = process.env.NODE_ENV === 'test' ? 'sqlite:memory:' : process.env.DATABASE_URL;
 
-const DATABASE_CONFIG = process.env.NODE_ENV === 'production' ? {
-  dialectOptions: {
-    ssl: true,
-    rejectUnauthorized: false,
-  },
-} : {};
+const sequelize = new Sequelize(DATABASE_URL, {});
 
-const sequelize = new Sequelize(DATABASE_URL,DATABASE_CONFIG);
+const userModel= user(sequelize,DataTypes)
+const marvelMovie = marvel(sequelize, DataTypes);
 
+userModel.hasMany(marvelMovie, { foreignKey: 'userId', sourceKey: 'id'});
+marvelMovie.belongsTo(userModel, { foreignKey: 'userId', targetKey: 'id'});
 
 module.exports = {
   db: sequelize,
-  users: userModel(sequelize, DataTypes),
+  marvelMovie: new DataCollection(marvelMovie),
+  users: userModel,
 };
